@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+// === Cria a tabela dinamicamente ===
+const linhas = 5;
+const colunas = 5;
+const tabela = document.createElement("table");
+tabela.style.borderCollapse = "collapse";
+document.body.appendChild(tabela);
+
+// Cria células
+for (let i = 0; i < linhas; i++) {
+  const tr = document.createElement("tr");
+  for (let j = 0; j < colunas; j++) {
+    const td = document.createElement("td");
+    td.id = `celula-${i}-${j}`;
+    td.style.width = "60px";
+    td.style.height = "60px";
+    td.style.border = "1px solid #555";
+    td.style.textAlign = "center";
+    tr.appendChild(td);
+  }
+  tabela.appendChild(tr);
+}
+
+// === Cria a imagem ===
+let linha = 2, coluna = 2;
+const img = document.createElement("img");
+img.src = "https://cdn-icons-png.flaticon.com/512/32/32195.png";
+img.style.width = "40px";
+document.getElementById(`celula-${linha}-${coluna}`).appendChild(img);
+
+// === Função de movimento ===
+function mover(dLinha, dColuna) {
+  const novaLinha = linha + dLinha;
+  const novaColuna = coluna + dColuna;
+
+  // Impede sair da tabela
+  if (novaLinha < 0 || novaLinha >= linhas || novaColuna < 0 || novaColuna >= colunas)
+    return;
+
+  // Remove imagem da célula atual
+  document.getElementById(`celula-${linha}-${coluna}`).innerHTML = "";
+
+  // Atualiza posição
+  linha = novaLinha;
+  coluna = novaColuna;
+
+  // Adiciona imagem na nova célula
+  document.getElementById(`celula-${linha}-${coluna}`).appendChild(img);
+}
+
+// === Controle pelo teclado ===
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowUp") mover(-1, 0);
+  if (e.key === "ArrowDown") mover(1, 0);
+  if (e.key === "ArrowLeft") mover(0, -1);
+  if (e.key === "ArrowRight") mover(0, 1);
+});
+</script>
+</body>
+</html>
