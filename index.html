@@ -1,32 +1,56 @@
-<!DOCTYPE html>
-<html>
-<body>
-<script>
-// === Cria a imagem ===
-const img = document.createElement("img");
-img.src = "https://cdn-icons-png.flaticon.com/512/32/32195.png"; // pode trocar
-img.style.width = "80px";
-img.style.position = "absolute"; // necessário para poder mover
-img.style.left = "200px"; // posição inicial
-img.style.top = "200px";
-document.body.appendChild(img);
+// Pega o elemento da imagem
+const imagem = document.getElementById('minhaImagem');
 
-// === Posição atual ===
-let x = 200;
-let y = 200;
-const passo = 20; // quantos pixels mover por tecla
+// Variáveis de estado e velocidade
+let posX = 0;   // Posição inicial Horizontal (left)
+let posY = 0;   // Posição inicial Vertical (top)
+let velocidadeX = 2.5; // Velocidade de movimento horizontal
+let velocidadeY = 1.8; // Velocidade de movimento vertical
 
-// === Detecta teclas pressionadas ===
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowUp")    y -= passo;
-  if (e.key === "ArrowDown")  y += passo;
-  if (e.key === "ArrowLeft")  x -= passo;
-  if (e.key === "ArrowRight") x += passo;
+/**
+ * Função principal do loop de animação.
+ * Ela será chamada repetidamente pelo navegador.
+ */
+function animar() {
+    // 1. Atualiza as dimensões da tela (caso o usuário redimensione a janela)
+    const larguraTela = window.innerWidth;
+    const alturaTela = window.innerHeight;
 
-  // Atualiza posição da imagem
-  img.style.left = x + "px";
-  img.style.top = y + "px";
-});
-</script>
-</body>
-</html>
+    // Pega as dimensões atuais do objeto
+    const larguraImagem = imagem.offsetWidth;
+    const alturaImagem = imagem.offsetHeight;
+
+    // 2. Cálculo da Nova Posição
+    
+    // Movimento horizontal
+    posX += velocidadeX;
+    
+    // Movimento vertical
+    posY += velocidadeY;
+
+    // 3. Lógica de Colisão (Inverte a direção ao bater na borda)
+
+    // Colisão Horizontal (Borda Direita e Esquerda)
+    if (posX + larguraImagem > larguraTela || posX < 0) {
+        velocidadeX *= -1; // Inverte a direção (ricochete)
+        // Opcional: Ajusta a posição para não ficar "presa" na borda
+        posX = Math.max(0, Math.min(posX, larguraTela - larguraImagem));
+    }
+
+    // Colisão Vertical (Borda Inferior e Superior)
+    if (posY + alturaImagem > alturaTela || posY < 0) {
+        velocidadeY *= -1; // Inverte a direção (ricochete)
+        // Opcional: Ajusta a posição para não ficar "presa" na borda
+        posY = Math.max(0, Math.min(posY, alturaTela - alturaImagem));
+    }
+
+    // 4. Aplica as Novas Posições ao Elemento
+    imagem.style.left = posX + 'px';
+    imagem.style.top = posY + 'px';
+
+    // 5. REPETE: Chama a função novamente no próximo frame de renderização
+    window.requestAnimationFrame(animar);
+}
+
+// Inicia o loop de animação
+window.requestAnimationFrame(animar);
