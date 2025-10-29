@@ -1,81 +1,32 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Mover Imagem na Tabela</title>
-<style>
-  table {
-    border-collapse: collapse;
-  }
-  td {
-    width: 60px;
-    height: 60px;
-    border: 1px solid #555;
-    text-align: center;
-  }
-  img {
-    width: 40px;
-  }
-</style>
-</head>
+<html>
 <body>
-
-<h3>Use as setas do teclado para mover a imagem</h3>
-
-<table id="tabela">
-  <tbody>
-    <!-- Cria 5 linhas e 5 colunas -->
-    <script>
-      for (let i = 0; i < 5; i++) {
-        document.write("<tr>");
-        for (let j = 0; j < 5; j++) {
-          document.write(`<td id="celula-${i}-${j}"></td>`);
-        }
-        document.write("</tr>");
-      }
-    </script>
-  </tbody>
-</table>
-
 <script>
-  // Posição inicial da imagem
-  let linha = 2;
-  let coluna = 2;
+// === Cria a imagem ===
+const img = document.createElement("img");
+img.src = "https://cdn-icons-png.flaticon.com/512/32/32195.png"; // pode trocar
+img.style.width = "80px";
+img.style.position = "absolute"; // necessário para poder mover
+img.style.left = "200px"; // posição inicial
+img.style.top = "200px";
+document.body.appendChild(img);
 
-  // Cria a imagem
-  const img = document.createElement("img");
-  img.src = "https://cdn-icons-png.flaticon.com/512/32/32195.png"; // você pode trocar
-  document.getElementById(`celula-${linha}-${coluna}`).appendChild(img);
+// === Posição atual ===
+let x = 200;
+let y = 200;
+const passo = 20; // quantos pixels mover por tecla
 
-  // Função que move a imagem
-  function mover(dLinha, dColuna) {
-    const novaLinha = linha + dLinha;
-    const novaColuna = coluna + dColuna;
+// === Detecta teclas pressionadas ===
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowUp")    y -= passo;
+  if (e.key === "ArrowDown")  y += passo;
+  if (e.key === "ArrowLeft")  x -= passo;
+  if (e.key === "ArrowRight") x += passo;
 
-    // Impede sair da tabela
-    if (novaLinha < 0 || novaLinha > 4 || novaColuna < 0 || novaColuna > 4) return;
-
-    // Remove a imagem da célula atual
-    document.getElementById(`celula-${linha}-${coluna}`).innerHTML = "";
-
-    // Atualiza posição
-    linha = novaLinha;
-    coluna = novaColuna;
-
-    // Adiciona a imagem na nova célula
-    document.getElementById(`celula-${linha}-${coluna}`).appendChild(img);
-  }
-
-  // Escuta as teclas do teclado
-  document.addEventListener("keydown", function(event) {
-    switch (event.key) {
-      case "ArrowUp": mover(-1, 0); break;
-      case "ArrowDown": mover(1, 0); break;
-      case "ArrowLeft": mover(0, -1); break;
-      case "ArrowRight": mover(0, 1); break;
-    }
-  });
+  // Atualiza posição da imagem
+  img.style.left = x + "px";
+  img.style.top = y + "px";
+});
 </script>
-
 </body>
 </html>
